@@ -35,7 +35,7 @@ const API_KEY = loadFile(API_KEY_PATH);
 // Check if the API key was loaded successfully
 if (API_KEY == null) {
   document.querySelector('.api-status').textContent = 'Failed to load API key. Please try again.';
-  document.querySelector('.api-status').style.backgroundColor = 'red'; /* TODO: Find good shade of red */
+  document.querySelector('.api-status').style.backgroundColor = 'rgba(255, 87, 59, 0.82)';
   throw new Error(`Could not get API key from text file. Please make sure the file exists and contains your NASA API key.`);
 } else {
   console.log('API key loaded successfully.');
@@ -47,11 +47,11 @@ fetch(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`)
     if (!response.ok) {
       /* TODO: differentiate between invalid API key, rate limit, etc. */
       document.querySelector('.api-status').textContent = 'API key verification failed. Please contact the developer.';
-      document.querySelector('.api-status').style.backgroundColor = 'red'; /* TODO: Find good shade of red */
+      document.querySelector('.api-status').style.backgroundColor = 'rgba(255, 87, 59, 0.82)';
       throw new Error(`API key verification failed: ${response.status} ${response.statusText}`);
     } else {
       document.querySelector('.api-status').textContent = 'Connected to NASA APOD API!';
-      document.querySelector('.api-status').style.backgroundColor = 'green'; /* TODO: Find good shade of green */
+      document.querySelector('.api-status').style.backgroundColor = 'rgba(23, 227, 23, 0.86)';
       document.getElementById('fetch').disabled = false;
       console.log('API key verified successfully.');
     }
