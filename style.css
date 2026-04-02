@@ -34,6 +34,21 @@ h1 {
   color: #212121;
 }
 
+/* API status message - align to center of content */
+.api-status {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  display: block;
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #666;
+  background-color: rgb(245, 245, 20);  /* TODO: Find good shade of yellow */
+  padding: 10px;
+  border-radius: 4px;
+  max-width: 600px;
+}
+
 /* Logo */
 .logo {
   width: 140px;
