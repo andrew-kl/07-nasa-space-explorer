@@ -88,6 +88,11 @@ button {
 button:hover {
   background-color: #bfbfbf;
 }
+button:disabled {
+  background-color: #e0e0e0;
+  color: #999;
+  cursor: not-allowed;
+}
 
 /* Stack horizontally on wider screens */
 @media (min-width: 600px) {
