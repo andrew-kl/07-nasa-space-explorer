@@ -45,7 +45,7 @@ if (API_KEY == null) {
 fetch(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`)
   .then(response => {
     if (!response.ok) {
-      /* TODO: differentiate between invalid API key, rate limit, etc. */
+      /* TODO: differentiate between invalid API key (403), rate limit (429), etc. */
       document.querySelector('.api-status').textContent = 'API key verification failed. Please contact the developer.';
       document.querySelector('.api-status').style.backgroundColor = 'rgba(255, 87, 59, 0.82)';
       throw new Error(`API key verification failed: ${response.status} ${response.statusText}`);
@@ -57,3 +57,69 @@ fetch(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`)
     }
   });
 
+// Fetch and display images on "Get Space Images" button click
+document.getElementById('fetch').addEventListener('click', () => {
+  document.getElementById('fetch').disabled = true; // Disable button to prevent multiple clicks
+  document.getElementById('gallery').innerHTML = ''; // Clear gallery/placeholder content
+
+  // Show loading message while fetching images
+  const waitDiv = document.createElement('div');
+  waitDiv.classList.add('placeholder');
+  waitDiv.innerHTML = `
+    <div class="placeholder-icon">⏳</div>
+    <p id="fetch-status">Loading space photos...</p>
+  `;
+  document.getElementById('gallery').appendChild(waitDiv);
+
+  // Get the selected date range from the inputs
+  const startDate = startInput.value;
+  const endDate = endInput.value;
+  console.log(`Fetching images from ${startDate} to ${endDate}...`);
+
+  // Fetch images from the NASA APOD API for the selected date range
+  fetch(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}&start_date=${startDate}&end_date=${endDate}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Failed to fetch images: ${response.status} ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Data fetched successfully:', data)
+      displayImages(data); // Call function to display images in the gallery
+
+      document.getElementById('fetch').disabled = false; // Enable button after fetching images
+    })
+    .catch(error => {
+      // TODO show error to client
+      console.log(Error('Error fetching images:', error));
+    });
+ }
+);
+
+// Display fetched images in the gallery
+function displayImages(data) {
+  // Clear the gallery
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = '';
+
+  // Create a gallery-item element for each image in data
+  data.forEach(element => {
+    const galleryItem = document.createElement('div');
+    galleryItem.classList.add('gallery-item');
+
+    const img = document.createElement('img');
+    img.src = element.url;
+    galleryItem.appendChild(img);
+
+    const title = document.createElement('p');
+    title.textContent = element.title;
+    galleryItem.appendChild(title);
+
+    const date = document.createElement('p');
+    date.textContent = element.date;
+    galleryItem.appendChild(date);
+
+    gallery.appendChild(galleryItem);
+  });
+}
