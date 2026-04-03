@@ -125,6 +125,7 @@ function displayImages(data) {
     const title = document.createElement('p');
     title.classList.add('title');
     title.textContent = element.title;
+    title.addEventListener('click', () => showModal(element));
     galleryItem.appendChild(title);
 
     const date = document.createElement('p');
@@ -133,4 +134,53 @@ function displayImages(data) {
 
     gallery.appendChild(galleryItem);
   });
+}
+
+// ======= MODAL WINDOW LOGIC (AI-GENERATED) =======
+
+// Create and show a modal window with more details about the gallery item
+function showModal(element) {
+  // Create an overlay to darken the background and center the modal
+  const overlay = document.createElement('div');
+  overlay.classList.add('modal-overlay');
+  overlay.style.position = 'fixed';
+  overlay.style.top = 0;
+  overlay.style.left = 0;
+  overlay.style.width = '100vw';
+  overlay.style.height = '100vh';
+  overlay.style.backgroundColor = 'rgba(0,0,0,0.6)';
+  overlay.style.display = 'flex';
+  overlay.style.justifyContent = 'center';
+  overlay.style.alignItems = 'center';
+  overlay.style.zIndex = 1000;
+
+  // Create the modal window itself
+  const modal = document.createElement('div');
+  modal.classList.add('modal-window');
+  modal.style.background = '#fff';
+  modal.style.padding = '20px';
+  modal.style.borderRadius = '8px';
+  modal.style.maxWidth = '90vw';
+  modal.style.maxHeight = '90vh';
+  modal.style.overflowY = 'auto';
+
+  // Add content to the modal (image, title, description, etc.)
+  modal.innerHTML = `
+    <img src="${element.hdurl}" alt="${element.title}" style="max-width:100%; border-radius:6px;">
+    <h2>${element.title}</h2>
+    <p><strong>Date:</strong> ${verboseDate(element.date)}</p>
+    <p>${element.explanation || 'No description available.'}</p>
+    <button id="close-modal">Close</button>
+  `;
+
+  // Close button
+  modal.querySelector('#close-modal').onclick = () => document.body.removeChild(overlay);
+
+  // Close when clicking outside the modal
+  overlay.onclick = (e) => {
+    if (e.target === overlay) document.body.removeChild(overlay);
+  };
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
 }

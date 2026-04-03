@@ -153,7 +153,8 @@ button:disabled {
 .gallery-item .title {
   font-weight: bold;
   font-size: 20px;
-  color: #333;
+  color: #3a1bc5;
+  cursor: pointer;
 }
 
 /* Placeholder content */
