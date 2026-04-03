@@ -1,3 +1,4 @@
+// ======== CONSTANTS AND HELPER FUNCTIONS ========
 // Path to the text file containing our NASA API key
 const API_KEY_PATH = 'NASA-api-key.txt';
 
@@ -16,6 +17,15 @@ function loadFile(filePath) {
   return result;
 }
 
+// Convert a date from YYYY-MM-DD format to a more verbose format (e.g. "January 1, 2000")
+function verboseDate(date) {
+  const dateElems = date.split('-');
+  const verboseMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  
+  return `${verboseMonths[parseInt(dateElems[1]) - 1]} ${dateElems[2]}, ${dateElems[0]}`;
+}
+
+// ============== MAIN FUNCTIONALITY ==============
 // Find our date picker inputs on the page
 const startInput = document.getElementById('startDate');
 const endInput = document.getElementById('endDate');
@@ -113,11 +123,12 @@ function displayImages(data) {
     galleryItem.appendChild(img);
 
     const title = document.createElement('p');
+    title.classList.add('title');
     title.textContent = element.title;
     galleryItem.appendChild(title);
 
     const date = document.createElement('p');
-    date.textContent = element.date;
+    date.textContent = verboseDate(element.date);
     galleryItem.appendChild(date);
 
     gallery.appendChild(galleryItem);

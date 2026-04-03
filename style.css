@@ -150,6 +150,12 @@ button:disabled {
   font-size: 14px;
 }
 
+.gallery-item .title {
+  font-weight: bold;
+  font-size: 20px;
+  color: #333;
+}
+
 /* Placeholder content */
 .placeholder {
   flex: 1 1 100%;
