@@ -1,25 +1,7 @@
 // ======== CONSTANTS AND HELPER FUNCTIONS ========
-// Path to the text file containing our NASA API key
-const API_KEY_PATH = 'NASA-api-key.txt';
-
 // Fun space facts
 const SPACE_FACTS_TITLES = ["Space is completely silent.", "A day on Venus is longer than its year.", "Neutron stars are insanely dense", "The hottest planet isn’t Mercury", "There may be a planet made of diamonds", "You can’t cry normally in space", "The Sun contains almost all the Solar System’s mass", "There’s a giant cloud of alcohol in space", "Saturn could float in water (technically)", "The Milky Way is speeding through space"];
 const SPACE_FACTS = ["Sound needs air (or some medium) to travel, and space is basically a vacuum.", "Venus rotates so slowly that it takes longer to spin once than to orbit the Sun.", "A sugar-cube-sized chunk of a neutron star would weigh about a billion tons on Earth.", "Even though Mercury is closest to the Sun, Venus is hotter because its thick atmosphere traps heat.", "A planet called '55 Cancri e' might be loaded with carbon and could have diamond-like terrain.", "Tears don’t fall—they just form floating blobs on your face.", "About 99.8% of the mass in the Solar System is in the Sun.", "A massive cloud of ethyl alcohol exists in space—enough to make trillions of trillions of drinks.", "Saturn’s average density is less than water, so in a ridiculously huge bathtub, it would float.", "Our galaxy is moving at about 1.3 million miles per hour (2.1 million km/h)."];
-
-// General file-loading function (used to load API key)
-// Source: https://stackoverflow.com/a/41133213
-function loadFile(filePath) {
-  var result = null;
-  var xmlhttp = new XMLHttpRequest();
-  xmlhttp.open("GET", filePath, false);
-  xmlhttp.send();
-  if (xmlhttp.status==200) {
-    result = xmlhttp.responseText;
-  } else {
-    console.log(Error(`Failed to load file '${filePath}': ${xmlhttp.status} ${xmlhttp.statusText}`));
-  }
-  return result;
-}
 
 // Convert a date from YYYY-MM-DD format to a more verbose format (e.g. "January 1, 2000")
 function verboseDate(date) {
@@ -43,38 +25,43 @@ setupDateInputs(startInput, endInput);
 // Disable search button until API key is verified
 document.getElementById('fetch').disabled = true;
 
-// Load the API key from the text file and store it in a variable
-const API_KEY = loadFile(API_KEY_PATH);
-
-// Check if the API key was loaded successfully
-if (API_KEY == null) {
-  document.querySelector('.api-status').textContent = 'Failed to load API key. Please try again.';
-  document.querySelector('.api-status').style.backgroundColor = 'rgba(255, 87, 59, 0.82)';
-  throw new Error(`Could not get API key from text file. Please make sure the file exists and contains your NASA API key.`);
-} else {
-  console.log('API key loaded successfully.');
-}
+// Read API from input field upon clicking "Confirm"
+let API_KEY = '';
+document.getElementById('saveKey').addEventListener('click', () => {
+  const inputKey = document.getElementById('apiKey').value.trim();
+  if (inputKey) {
+    API_KEY = inputKey;
+    console.log('API key entered:', API_KEY);
+    document.querySelector('.api-status').textContent = 'Verifying API key...';
+    verifyApiKey(); // Call function to verify the API key
+  } else {
+    alert('Please enter a valid NASA API key.');
+  }
+});
 
 // Verify API key
-fetch(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`)
-  .then(response => {
-    if (!response.ok) {
-      if (response.status === 429) {
-        document.querySelector('.api-status').textContent = 'Too many requests. Please wait and try again later.';
-      } else if (response.status >= 500 && response.status < 600) {
-        document.querySelector('.api-status').textContent = 'APOD API unavailable. Please try again later.';
+function verifyApiKey() {
+  fetch(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`)
+    .then(response => {
+      if (!response.ok) {
+        if (response.status === 429) {
+          document.querySelector('.api-status').textContent = 'Too many requests. Please wait and try again later.';
+        } else if (response.status >= 500 && response.status < 600) {
+          document.querySelector('.api-status').textContent = 'APOD API unavailable. Please try again later.';
+        } else {
+          document.querySelector('.api-status').textContent = 'API key verification failed. Please try a different key.';
+        }      
+        document.querySelector('.api-status').style.backgroundColor = 'rgba(255, 87, 59, 0.82)';
+        throw new Error(`API key verification failed: ${response.status} ${response.statusText}`);
       } else {
-        document.querySelector('.api-status').textContent = 'API key verification failed. Please contact the developer.';
-      }      
-      document.querySelector('.api-status').style.backgroundColor = 'rgba(255, 87, 59, 0.82)';
-      throw new Error(`API key verification failed: ${response.status} ${response.statusText}`);
-    } else {
-      document.querySelector('.api-status').textContent = 'Connected to NASA APOD API!';
-      document.querySelector('.api-status').style.backgroundColor = 'rgba(23, 227, 23, 0.86)';
-      document.getElementById('fetch').disabled = false;
-      console.log('API key verified successfully.');
-    }
-  });
+        document.querySelector('.api-status').textContent = 'Connected to NASA APOD API!';
+        document.querySelector('.api-status').style.backgroundColor = 'rgba(23, 227, 23, 0.86)';
+        document.getElementById('fetch').disabled = false;
+        document.querySelector('.api-key-input').remove();
+        console.log('API key verified successfully.');
+      }
+    });
+}
 
 // Fetch and display images on "Get Space Images" button click
 document.getElementById('fetch').addEventListener('click', () => {
@@ -113,7 +100,7 @@ document.getElementById('fetch').addEventListener('click', () => {
     .catch(error => {
       waitDiv.innerHTML = `
         <div class="placeholder-icon">❌</div>
-        <p id="fetch-status">Something went wrong. Please try again later.</p>
+        <p id="fetch-status">Something went wrong. Please refresh and try again.</p>
       `;
       console.log(Error('Error fetching images:', error));
     });

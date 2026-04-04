@@ -137,6 +137,19 @@ h1 {
   max-width: 600px;
 }
 
+.api-key-input {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  display: block;
+  margin-bottom: 20px;
+}
+
+input#apiKey {
+  width: 300px;
+  max-width: 80%;
+}
+
 /* Logo */
 .logo {
   width: 140px;
@@ -173,6 +186,11 @@ button {
   color: black;
   cursor: pointer;
 }
+
+button#saveKey {
+  padding: 5px 10px;
+}
+
 button:hover {
   background-color: #bfbfbf;
 }
