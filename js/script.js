@@ -59,8 +59,13 @@ if (API_KEY == null) {
 fetch(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`)
   .then(response => {
     if (!response.ok) {
-      /* TODO: differentiate between invalid API key (403), rate limit (429), etc. */
-      document.querySelector('.api-status').textContent = 'API key verification failed. Please contact the developer.';
+      if (response.status === 429) {
+        document.querySelector('.api-status').textContent = 'Too many requests. Please wait and try again later.';
+      } else if (response.status >= 500 && response.status < 600) {
+        document.querySelector('.api-status').textContent = 'APOD API unavailable. Please try again later.';
+      } else {
+        document.querySelector('.api-status').textContent = 'API key verification failed. Please contact the developer.';
+      }      
       document.querySelector('.api-status').style.backgroundColor = 'rgba(255, 87, 59, 0.82)';
       throw new Error(`API key verification failed: ${response.status} ${response.statusText}`);
     } else {
@@ -106,7 +111,10 @@ document.getElementById('fetch').addEventListener('click', () => {
       document.getElementById('fetch').disabled = false; // Enable button after fetching images
     })
     .catch(error => {
-      // TODO show error to client
+      waitDiv.innerHTML = `
+        <div class="placeholder-icon">❌</div>
+        <p id="fetch-status">Something went wrong. Please try again later.</p>
+      `;
       console.log(Error('Error fetching images:', error));
     });
  }
