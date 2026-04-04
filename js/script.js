@@ -2,6 +2,10 @@
 // Path to the text file containing our NASA API key
 const API_KEY_PATH = 'NASA-api-key.txt';
 
+// Fun space facts
+const SPACE_FACTS_TITLES = ["Space is completely silent.", "A day on Venus is longer than its year.", "Neutron stars are insanely dense", "The hottest planet isn’t Mercury", "There may be a planet made of diamonds", "You can’t cry normally in space", "The Sun contains almost all the Solar System’s mass", "There’s a giant cloud of alcohol in space", "Saturn could float in water (technically)", "The Milky Way is speeding through space"];
+const SPACE_FACTS = ["Sound needs air (or some medium) to travel, and space is basically a vacuum.", "Venus rotates so slowly that it takes longer to spin once than to orbit the Sun.", "A sugar-cube-sized chunk of a neutron star would weigh about a billion tons on Earth.", "Even though Mercury is closest to the Sun, Venus is hotter because its thick atmosphere traps heat.", "A planet called '55 Cancri e' might be loaded with carbon and could have diamond-like terrain.", "Tears don’t fall—they just form floating blobs on your face.", "About 99.8% of the mass in the Solar System is in the Sun.", "A massive cloud of ethyl alcohol exists in space—enough to make trillions of trillions of drinks.", "Saturn’s average density is less than water, so in a ridiculously huge bathtub, it would float.", "Our galaxy is moving at about 1.3 million miles per hour (2.1 million km/h)."];
+
 // General file-loading function (used to load API key)
 // Source: https://stackoverflow.com/a/41133213
 function loadFile(filePath) {
@@ -71,6 +75,7 @@ fetch(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`)
 document.getElementById('fetch').addEventListener('click', () => {
   document.getElementById('fetch').disabled = true; // Disable button to prevent multiple clicks
   document.getElementById('gallery').innerHTML = ''; // Clear gallery/placeholder content
+  document.querySelector('.space-fact')?.remove(); // Remove existing fun fact
 
   // Show loading message while fetching images
   const waitDiv = document.createElement('div');
@@ -112,6 +117,16 @@ function displayImages(data) {
   // Clear the gallery
   const gallery = document.getElementById('gallery');
   gallery.innerHTML = '';
+
+  // Display a fun space fact above the gallery
+  const factIndex = Math.floor(Math.random() * SPACE_FACTS.length);
+  const spaceFactDiv = document.createElement('div');
+  spaceFactDiv.classList.add('space-fact');
+  spaceFactDiv.innerHTML = `
+    <h3>Did you know: ${SPACE_FACTS_TITLES[factIndex]}</h3>
+    <p>${SPACE_FACTS[factIndex]}</p>
+  `;
+  document.querySelector('.container').insertBefore(spaceFactDiv, gallery);
 
   // Create a gallery-item element for each image in data
   data.forEach(element => {
