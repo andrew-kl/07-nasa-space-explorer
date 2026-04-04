@@ -1,3 +1,91 @@
+/* ===== Modal Window Styles ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-window {
+  background: #fff;
+  padding: 24px 24px 16px 24px;
+  border-radius: 12px;
+  max-width: 1000px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  position: relative;
+  animation: modal-fade-in 0.2s;
+}
+
+@keyframes modal-fade-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-window img,
+.modal-window video {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.modal-window h2 {
+  margin-top: 0;
+  font-size: 1.5em;
+  color: #3a1bc5;
+}
+
+.modal-window p {
+  font-size: 1em;
+  margin-bottom: 10px;
+}
+
+.modal-window #scroll-down {
+  font-size: 0.9em;
+  color: #888;
+  text-align: center;
+}
+
+.modal-window button {
+  margin-top: 12px;
+  padding: 8px 18px;
+  font-size: 1em;
+  border-radius: 4px;
+  border: none;
+  background: #3a1bc5;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.modal-window button:hover {
+  background: #24107a;
+}
+
+/* Close (X) button in top-right */
+.modal-close-x {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 1.5em;
+  color: #888;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1;
+  padding: 0 6px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+.modal-close-x:hover {
+  color: #3a1bc5;
+}
 /* Global reset & box sizing */
 * {
   box-sizing: border-box;

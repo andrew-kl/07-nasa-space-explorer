@@ -131,7 +131,7 @@ function displayImages(data) {
   const spaceFactDiv = document.createElement('div');
   spaceFactDiv.classList.add('space-fact');
   spaceFactDiv.innerHTML = `
-    <h3>Did you know: ${SPACE_FACTS_TITLES[factIndex]}</h3>
+    <h3>🚀 Did you know: ${SPACE_FACTS_TITLES[factIndex]}</h3>
     <p>${SPACE_FACTS[factIndex]}</p>
   `;
   document.querySelector('.container').insertBefore(spaceFactDiv, gallery);
@@ -168,40 +168,34 @@ function showModal(element) {
   // Create an overlay to darken the background and center the modal
   const overlay = document.createElement('div');
   overlay.classList.add('modal-overlay');
-  overlay.style.position = 'fixed';
-  overlay.style.top = 0;
-  overlay.style.left = 0;
-  overlay.style.width = '100vw';
-  overlay.style.height = '100vh';
-  overlay.style.backgroundColor = 'rgba(0,0,0,0.6)';
-  overlay.style.display = 'flex';
-  overlay.style.justifyContent = 'center';
-  overlay.style.alignItems = 'center';
-  overlay.style.zIndex = 1000;
 
   // Create the modal window itself
   const modal = document.createElement('div');
   modal.classList.add('modal-window');
-  modal.style.background = '#fff';
-  modal.style.padding = '20px';
-  modal.style.borderRadius = '8px';
-  modal.style.maxWidth = '90vw';
-  modal.style.maxHeight = '90vh';
-  modal.style.overflowY = 'auto';
+  modal.innerHTML = `<p id="scroll-down"><i>Scroll down for more details...</i></p>`;
+
+  // Add the close "X" button (top-right)
+  const closeX = document.createElement('button');
+  closeX.classList.add('modal-close-x');
+  closeX.setAttribute('aria-label', 'Close');
+  closeX.innerHTML = '&times;';
+  closeX.onclick = () => document.body.removeChild(overlay);
 
   // Add content to the modal (image, title, description, etc.)
   if (element.media_type === 'image') {
-    modal.innerHTML = `
-      <img src="${element.hdurl ? element.hdurl : element.url}" alt="${element.title}" style="max-width:100%; border-radius:6px;">`
+    modal.innerHTML += `
+      <img src="${element.hdurl ? element.hdurl : element.url}" alt="${element.title}">
+    `;
   } else {
-    // works in very specific cases as far as I understand, idk if it will work for all APOD video entries
-    modal.innerHTML = `
-      <video controls style="max-width:100%; border-radius:6px;">
+    // This approach definitely works for mp4 URLs, but may not work for other video types.
+    // Don't know what other video formats APOD uses.
+    modal.innerHTML += `
+      <video controls>
         <source src="${element.url}" type="video/mp4">
         Your browser does not support the video tag.
       </video>
       <p><i>Fallback video link: <a href="${element.url}" target="_blank">click here</a>.</i></p>
-      `;
+    `;
   }
   modal.innerHTML += `
     <h2>${element.title}</h2>
@@ -210,8 +204,11 @@ function showModal(element) {
     <button id="close-modal">Close</button>
   `;
 
-  // Close button
+  // Close button (bottom)
   modal.querySelector('#close-modal').onclick = () => document.body.removeChild(overlay);
+
+  // Close button (x)
+  modal.appendChild(closeX);
 
   // Close when clicking outside the modal
   overlay.onclick = (e) => {
