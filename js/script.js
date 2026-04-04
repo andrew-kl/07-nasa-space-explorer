@@ -134,7 +134,9 @@ function displayImages(data) {
     galleryItem.classList.add('gallery-item');
 
     const img = document.createElement('img');
-    img.src = element.url;
+    img.src = (element.media_type === 'image') ? element.url : 'img/video-stub.png';
+    img.alt = element.title;
+    img.addEventListener('click', () => showModal(element));
     galleryItem.appendChild(img);
 
     const title = document.createElement('p');
@@ -180,8 +182,20 @@ function showModal(element) {
   modal.style.overflowY = 'auto';
 
   // Add content to the modal (image, title, description, etc.)
-  modal.innerHTML = `
-    <img src="${element.hdurl}" alt="${element.title}" style="max-width:100%; border-radius:6px;">
+  if (element.media_type === 'image') {
+    modal.innerHTML = `
+      <img src="${element.hdurl ? element.hdurl : element.url}" alt="${element.title}" style="max-width:100%; border-radius:6px;">`
+  } else {
+    // works in very specific cases as far as I understand, idk if it will work for all APOD video entries
+    modal.innerHTML = `
+      <video controls style="max-width:100%; border-radius:6px;">
+        <source src="${element.url}" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <p><i>Fallback video link: <a href="${element.url}" target="_blank">click here</a>.</i></p>
+      `;
+  }
+  modal.innerHTML += `
     <h2>${element.title}</h2>
     <p><strong>Date:</strong> ${verboseDate(element.date)}</p>
     <p>${element.explanation || 'No description available.'}</p>
